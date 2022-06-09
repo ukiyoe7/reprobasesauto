@@ -1,9 +1,9 @@
-## TABELA DE PREÇOS 
+##  ATUALIZADOR BASE DE ACORDOS 
+## 09.06.2022
 ## SANDRO JAKOSKA
 
 library(DBI)
-library(tidyverse)
-library(lubridate)
+library(magrittr)
 library(googlesheets4)
 con2 <- dbConnect(odbc::odbc(), "reproreplica")
 
@@ -23,14 +23,12 @@ base_acordos_cli <- dbGetQuery(con2,"
                    CLIDTCAD
            FROM CLIEN C
            LEFT JOIN GRUPOCLI G ON G.GCLCODIGO=C.GCLCODIGO 
-           LEFT JOIN (SELECT CLICODIGO,ZOCODIGO,ZODESCRICAO FROM ENDCLI E
+           LEFT JOIN (SELECT CLICODIGO,E.ZOCODIGO,ZODESCRICAO,CIDNOME FROM ENDCLI E
                                         LEFT JOIN ZONA Z ON E.ZOCODIGO=Z.ZOCODIGO
                                         LEFT JOIN CIDADE C ON C.CIDCODIGO=E.CIDCODIGO
-                                        WHERE ENDFAT='S')
+                                        WHERE ENDFAT='S')A ON C.CLICODIGO=A.CLICODIGO
            WHERE CLICLIENTE='S'
            ") 
-
-View(base_acordos_cli)
 
 
 range_write("1dvMlHa-jPpRf6Jtc-G-oYqrEzofdSO7g2tfxgmGOI5g",data=base_acordos_cli,sheet = "CLIENTES",
