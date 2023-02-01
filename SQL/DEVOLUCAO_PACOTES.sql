@@ -1,0 +1,27 @@
+-- REF [ADM VENDAS] 288 PEDIDOS FORNEC PACOTES 
+
+WITH CLI AS (SELECT DISTINCT C.CLICODIGO,
+                              CLINOMEFANT,
+                               SETOR
+                                FROM CLIEN C
+LEFT JOIN (SELECT CLICODIGO,
+                   E.ZOCODIGO,
+                    ZODESCRICAO SETOR FROM ENDCLI E
+LEFT JOIN (SELECT ZOCODIGO,
+                   ZODESCRICAO FROM 
+                    ZONA WHERE ZOCODIGO IN (20,21,22,23,24,25,28)
+)Z ON E.ZOCODIGO=Z.ZOCODIGO WHERE ENDFAT='S')A ON C.CLICODIGO=A.CLICODIGO
+ WHERE CLICLIENTE='S')
+
+SELECT P.CLICODIGO,
+        SETOR,
+         PEFDTEMIS EMISSAO,
+          FISCODIGO,
+           ID_PEDIDO,
+            PEFVRTOTAL VRTOTAL FROM PEDFO P
+             INNER JOIN CLI C ON P.CLICODIGO=C.CLICODIGO
+              WHERE PEFSIT<>'C' AND 
+               PEFDTEMIS BETWEEN '01.01.2022' AND 
+                'TODAY' AND 
+                  FISCODIGO IN ('1.94C','2.94C') AND 
+                   PEFSIT<>'C'
