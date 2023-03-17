@@ -21,46 +21,68 @@ PED AS (SELECT P.ID_PEDIDO,
                          WHERE PEDSITPED<>'C' AND 
                                     PEDLCFINANC IN ('S', 'L','N')),
 
--- MULTIFOCAIS AND VS
-PROD AS (SELECT PROCODIGO,
-                  CASE 
-                   WHEN GR2CODIGO=1 THEN 'MULTIFOCAL'
-                    WHEN GR2CODIGO=3 THEN 'VISAO SIMPLES' 
-                     ELSE 'OUTROS'
-                      END CLASSE1,
-
-                 CASE 
-                   WHEN MARCODIGO IN (57,24) THEN 'ESSILOR' 
-                     WHEN MARCODIGO IN (189,135,158,159) THEN 'MARCAS REPRO'
-                        ELSE 'OUTROS' 
-                         END CLASSE2, 
-
-                  CASE 
+-- PILARES
+PILARES AS (SELECT PROCODIGO,
+                       CASE 
                    WHEN MARCODIGO=57 THEN 'VARILUX' 
-                    WHEN MARCODIGO=24 THEN 'KODAK'
-                     WHEN MARCODIGO=189 THEN 'INSIGNE'
-                      WHEN MARCODIGO=135 THEN 'IMAGEM'
-                       WHEN MARCODIGO=158 THEN 'ACTUALITE'
-                        WHEN MARCODIGO=159  THEN 'AVANCE'
-                         WHEN MARCODIGO=1  THEN 'ESSILOR'
+                    WHEN PROCODIGO IN (SELECT PROCODIGO FROM NGRUPOS WHERE GRCODIGO=162) THEN 'M CLIENTE'
+                     WHEN (MARCODIGO=24 AND GR2CODIGO=1) THEN 'KODAK MF'
+                      WHEN (MARCODIGO=24 AND GR2CODIGO=3) THEN 'KODAK VS'
+                      WHEN (MARCODIGO IN (106,128,135,158,159,189) AND PROTIPO<>'T') THEN 'M REPRO'
+                       WHEN (PRODESCRICAO LIKE '%CRIZAL%' OR PRODESCRICAO LIKE '%C.FORTE%') AND GR1CODIGO=2 THEN 'CRIZAL VS'
+                        WHEN (PRODESCRICAO LIKE '%CRIZAL%' AND PROTIPO='T') THEN 'TRAT CRIZAL'
                          ELSE 'OUTROS' 
-                           END CLASSE3 
-                            FROM PRODU WHERE PROSITUACAO='A'
-                             AND PROTIPO IN ('F','P'))
-                             
-                             
-
+                          END PILARES
+                           FROM PRODU),  
+                          
+-- MULTIFOCAIS
+MF AS (SELECT PROCODIGO,
+                       CASE 
+                        WHEN MARCODIGO=57 THEN 'VARILUX'
+                         WHEN MARCODIGO=189 THEN 'INSIGNE'
+                          WHEN MARCODIGO=135 THEN 'IMAGEM'
+                           WHEN MARCODIGO=128 THEN 'UZ+'
+                            WHEN MARCODIGO=158 THEN 'ACTUALITE'
+                             WHEN MARCODIGO=159  THEN 'AVANCE'
+                              WHEN PROCODIGO IN (SELECT PROCODIGO FROM NGRUPOS WHERE GRCODIGO=162) THEN 'MARCA CLIENTE'
+                               WHEN MARCODIGO=24 THEN 'KODAK'
+                                ELSE 'OUTROS' 
+                                 END   MULTIFOCAIS
+                                  FROM  PRODU WHERE GR2CODIGO=1), 
+                                   
+-- TRANSITIONS
+TRANS AS (SELECT PROCODIGO,
+                  CASE 
+                   WHEN PRODESCRICAO LIKE '%TGEN8%' OR PRODESCRICAO LIKE '%TRANS%' THEN 'TRANSITIONS'
+                    ELSE ''
+                     END TRANSITIONS
+                      FROM PRODU), 
+                      
+                      
+-- LENTES
+LENS AS (SELECT PROCODIGO,
+                  CASE 
+                   WHEN PROTIPO IN ('P','F','E') THEN 'LENTES'
+                    ELSE 'SERVICOS'
+                     END LENTES
+                      FROM PRODU)
+                                   
 SELECT
- PEDDTBAIXA,
-   CLASSE1,
-    CLASSE2,
-     CLASSE3,
-      SUM(PDPQTDADE)QTD,
-       SUM(PDPUNITLIQUIDO*PDPQTDADE)VRVENDA 
-        FROM PDPRD PD
-         INNER JOIN PED P ON PD.ID_PEDIDO=P.ID_PEDIDO
-          INNER JOIN PROD PR ON PD.PROCODIGO=PR.PROCODIGO
-            GROUP BY 1,2,3,4
+   PEDDTBAIXA,
+     PILARES,
+      MULTIFOCAIS,
+       TRANSITIONS,
+        LENTES,
+        PDPDESCRICAO,
+         SUM(PDPQTDADE)QTD,
+          SUM(PDPUNITLIQUIDO*PDPQTDADE)VRVENDA 
+           FROM PDPRD PD
+            INNER JOIN PED P ON PD.ID_PEDIDO=P.ID_PEDIDO
+             LEFT JOIN PILARES PR ON PD.PROCODIGO=PR.PROCODIGO
+              LEFT JOIN MF M ON PD.PROCODIGO=M.PROCODIGO
+               LEFT JOIN TRANS T ON PD.PROCODIGO=T.PROCODIGO
+                LEFT JOIN LENS L ON PD.PROCODIGO=L.PROCODIGO
+                 GROUP BY 1,2,3,4,5,6
               
              
              
