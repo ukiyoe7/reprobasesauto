@@ -23,18 +23,21 @@ range_write("17W3qQfIhG6yBAZFCCxVeumscNjGl-aM3FVz2tAr36wo", range = "A:D",data =
 
 ## GET DATA
 
-df2 <- dbGetQuery(con2, statement = read_file("C:\\Users\\Repro\\Documents\\R\\ADM\\BASES_AUTO\\SQL\\PRODUTOS_ADM.sql")) 
+df2 <- dbGetQuery(con2, statement = read_file("C:\\Users\\Repro\\Documents\\R\\ADM\\BASES_AUTO\\SQL\\PRODUTOS_ADM.sql")) %>% 
+              mutate(PILARES=str_trim(PILARES)) %>% 
+               mutate(LENTES=str_trim(LENTES))
 
 
 View(df2)
 
-mutate(LENTES=str_trim(LENTES))%>% 
+
+df2 %>% group_by(floor_date(PEDDTBAIXA,"year")) %>% summarize(V=sum(VRVENDA))
 
 ## SHARE PILARES
   
   
 SHARE_PILARES <-
-  df2  %>% mutate(LENTES=str_trim(LENTES)) %>%  filter(LENTES=='LENTES') %>% 
+  df2   %>%  filter(LENTES=='LENTES') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month"),PILARES) %>%  
   summarize(
             SHARE = round(sum(VRVENDA) / sum(.$VRVENDA[floor_date(.$PEDDTBAIXA, "year") == 
@@ -52,6 +55,22 @@ SALES_PILARES <-
   group_by(MES=floor_date(PEDDTBAIXA,"month"),PILARES) %>%  
   summarize(VENDAS=sum(VRVENDA)) %>% as.data.frame() %>% mutate(VAR=VENDAS/lag(VENDAS,7)-1)
 
+
+## SHARE PILARES
+
+SHARE_TRANSITIONS <-
+  df2 %>% mutate(LENTES=str_trim(LENTES)) %>% filter(LENTES=='LENTES') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"month"),TRANSITIONS) %>%  
+  summarize(
+    SHARE = round(sum(VRVENDA) / sum(.$VRVENDA[floor_date(.$PEDDTBAIXA, "year") == 
+                                                 floor_date(PEDDTBAIXA, "year") & 
+                                                 floor_date(.$PEDDTBAIXA, "month") == 
+                                                 floor_date(PEDDTBAIXA, "month")]), 3)) %>% 
+  melt(.,id.vars = c("MES", "TRANSITIONS"),variable.name = "METRICA",value.name = "VALOR") %>% 
+  rename(PILARES=2) %>% as.data.frame() %>% filter(PILARES=='TRANSITIONS')
+
+
+
 TRANSITIONS <-
   df2 %>% 
   filter(PEDDTBAIXA %within% 
@@ -67,10 +86,9 @@ PILARES3 <-
   melt(.,id.vars = c("MES", "PILARES"),variable.name = "METRICA",value.name = "VALOR")
 
 
-PILARES4 <- rbind(SHARE_PILARES,PILARES3) %>% filter(!is.na(VALOR))
+PILARES4 <- rbind(SHARE_PILARES,SHARE_TRANSITIONS,PILARES3) %>% filter(!is.na(VALOR))
 
 view(PILARES4)
-
 
 
 

@@ -18,12 +18,12 @@ ENDE AS (SELECT ENDCODIGO,
 PEDEMIS AS (SELECT ID_PEDIDO,
                     PEDDTEMIS,
                      PEDDTBAIXA,
-                     SETOR
-                      FROM PEDID 
-                       INNER JOIN FIS ON PEDID.FISCODIGO1=FIS.FISCODIGO
-                        INNER JOIN ENDE ON PEDID.CLICODIGO=ENDE.CLICODIGO AND PEDID.ENDCODIGO=ENDE.ENDCODIGO
-                         WHERE 
-                          (PEDDTEMIS BETWEEN (CURRENT_DATE) - EXTRACT(DAY FROM (CURRENT_DATE)) + 1 AND 'TODAY' OR
+                      SETOR
+                       FROM PEDID 
+                        INNER JOIN FIS ON PEDID.FISCODIGO1=FIS.FISCODIGO
+                         INNER JOIN ENDE ON PEDID.CLICODIGO=ENDE.CLICODIGO AND PEDID.ENDCODIGO=ENDE.ENDCODIGO
+                          WHERE 
+                           (PEDDTEMIS BETWEEN (CURRENT_DATE) - EXTRACT(DAY FROM (CURRENT_DATE)) + 1 AND 'TODAY' OR
                             PEDDTEMIS BETWEEN DATEADD(-1 YEAR TO (CURRENT_DATE) - EXTRACT(DAY FROM CURRENT_DATE) + 1)
                               AND DATEADD(-1 YEAR TO (CURRENT_DATE) - EXTRACT(DAY FROM CURRENT_DATE) + 32 - 
                                 EXTRACT(DAY FROM (CURRENT_DATE) - EXTRACT(DAY FROM (CURRENT_DATE)) + 32)))   AND 

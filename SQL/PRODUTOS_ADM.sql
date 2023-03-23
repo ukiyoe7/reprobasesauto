@@ -7,10 +7,14 @@ WITH FIS AS (SELECT FISCODIGO
 
 DATE_PED AS (SELECT ID_PEDIDO 
                       FROM PEDID WHERE
-                               (PEDDTBAIXA BETWEEN (CURRENT_DATE) - EXTRACT(DAY FROM (CURRENT_DATE)) + 1 AND 'TODAY' OR
-                                 PEDDTBAIXA BETWEEN DATEADD(-1 YEAR TO (CURRENT_DATE) - EXTRACT(DAY FROM CURRENT_DATE) + 1)
-                                  AND DATEADD(-1 YEAR TO (CURRENT_DATE) - EXTRACT(DAY FROM CURRENT_DATE) + 32 - 
-                                   EXTRACT(DAY FROM (CURRENT_DATE) - EXTRACT(DAY FROM (CURRENT_DATE)) + 32)))),
+                       (PEDDTBAIXA BETWEEN 
+                               CAST(EXTRACT(YEAR FROM CURRENT_DATE) || '-01-01' AS DATE) AND
+                                  'YESTERDAY' 
+                                  OR
+                      PEDDTBAIXA BETWEEN 
+                                  DATEADD(YEAR, -1, CAST(EXTRACT(YEAR FROM CURRENT_DATE) || '-01-01' AS DATE)) AND
+                                  DATEADD(YEAR, -1, CURRENT_DATE-1)
+                                  )),
 
 
 PED AS (SELECT P.ID_PEDIDO,
@@ -25,15 +29,24 @@ PED AS (SELECT P.ID_PEDIDO,
 PILARES AS (SELECT PROCODIGO,
                        CASE 
                    WHEN MARCODIGO=57 THEN 'VARILUX' 
-                    WHEN PROCODIGO IN (SELECT PROCODIGO FROM NGRUPOS WHERE GRCODIGO=162) THEN 'M CLIENTE'
-                     WHEN (MARCODIGO=24 AND GR2CODIGO=1) THEN 'KODAK MF'
-                      WHEN (MARCODIGO=24 AND GR2CODIGO=3) THEN 'KODAK VS'
+                     WHEN (MARCODIGO=24 AND GR2CODIGO=1) THEN 'KODAK'
                       WHEN (MARCODIGO IN (106,128,135,158,159,189) AND PROTIPO<>'T') THEN 'M REPRO'
                        WHEN (PRODESCRICAO LIKE '%CRIZAL%' OR PRODESCRICAO LIKE '%C.FORTE%') AND GR1CODIGO=2 THEN 'CRIZAL VS'
                         WHEN (PRODESCRICAO LIKE '%CRIZAL%' AND PROTIPO='T') THEN 'TRAT CRIZAL'
                          ELSE 'OUTROS' 
                           END PILARES
-                           FROM PRODU),  
+                           FROM PRODU),
+                           
+ -- MARCAS PROPRIAS
+MPROPRIA AS (SELECT PROCODIGO,
+                       CASE 
+                    WHEN PROCODIGO IN (SELECT PROCODIGO FROM NGRUPOS WHERE GRCODIGO=162) THEN 'M CLIENTE'
+                      WHEN (MARCODIGO IN (106,128,135,158,159,189) AND PROTIPO<>'T') THEN 'M REPRO'
+                       ELSE '' 
+                          END MPROPRIA
+                           FROM PRODU), 
+                           
+                           
                           
 -- MULTIFOCAIS
 MF AS (SELECT PROCODIGO,
@@ -72,17 +85,19 @@ SELECT
      PILARES,
       MULTIFOCAIS,
        TRANSITIONS,
+        MPROPRIA,
         LENTES,
-        PDPDESCRICAO,
-         SUM(PDPQTDADE)QTD,
-          SUM(PDPUNITLIQUIDO*PDPQTDADE)VRVENDA 
-           FROM PDPRD PD
-            INNER JOIN PED P ON PD.ID_PEDIDO=P.ID_PEDIDO
-             LEFT JOIN PILARES PR ON PD.PROCODIGO=PR.PROCODIGO
-              LEFT JOIN MF M ON PD.PROCODIGO=M.PROCODIGO
-               LEFT JOIN TRANS T ON PD.PROCODIGO=T.PROCODIGO
-                LEFT JOIN LENS L ON PD.PROCODIGO=L.PROCODIGO
-                 GROUP BY 1,2,3,4,5,6
+         PDPDESCRICAO,
+          SUM(PDPQTDADE)QTD,
+           SUM(PDPUNITLIQUIDO*PDPQTDADE)VRVENDA 
+            FROM PDPRD PD
+             INNER JOIN PED P ON PD.ID_PEDIDO=P.ID_PEDIDO
+              LEFT JOIN PILARES PR ON PD.PROCODIGO=PR.PROCODIGO
+               LEFT JOIN MPROPRIA MP ON PD.PROCODIGO=MP.PROCODIGO
+               LEFT JOIN MF M ON PD.PROCODIGO=M.PROCODIGO
+                LEFT JOIN TRANS T ON PD.PROCODIGO=T.PROCODIGO
+                 LEFT JOIN LENS L ON PD.PROCODIGO=L.PROCODIGO
+                  GROUP BY 1,2,3,4,5,6,7
               
              
              
