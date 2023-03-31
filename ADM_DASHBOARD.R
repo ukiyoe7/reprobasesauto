@@ -49,7 +49,8 @@ SHARE_VARILUX_MM_2 <-
   rbind(SHARE_VARILUX_MM,SHARE_MULTIFOCAIS_MM) %>% 
   group_by(MES) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='VARILUX'])/sum(SHARE[PILAR=='MULTIFOCAIS'])) %>% 
-  mutate(PILAR='MARCAS REPRO') %>% 
+  mutate(SHARE=round(SHARE,3)) %>% 
+  mutate(PILAR='VARILUX') %>% 
   mutate(METRICA='SHARE') %>% 
   mutate(PERIODO='MES') %>% 
    rename(DATA=1)
@@ -70,10 +71,11 @@ SHARE_VARILUX_YTD_2 <-
  rbind(SHARE_VARILUX_YTD,SHARE_MULTIFOCAIS_YTD) %>% 
   group_by(ANO) %>% 
    summarize(SHARE=sum(SHARE[PILAR=='VARILUX'])/sum(SHARE[PILAR=='MULTIFOCAIS'])) %>% 
-    mutate(PILAR='VARILUX') %>% 
-     mutate(METRICA='SHARE') %>% 
-      mutate(PERIODO='YTD') %>% 
-  rename(DATA=1)
+    mutate(SHARE=round(SHARE,3)) %>% 
+     mutate(PILAR='VARILUX') %>% 
+      mutate(METRICA='SHARE') %>% 
+       mutate(PERIODO='YTD') %>% 
+        rename(DATA=1)
        
 
 
@@ -97,10 +99,11 @@ SHARE_KODAK_MM_2 <-
 rbind(SHARE_KODAK_MM,SHARE_LENTES_MM) %>% 
   group_by(MES) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='KODAK'])/sum(SHARE[PILAR=='LENTES'])) %>% 
-  mutate(PILAR='VARILUX') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='MES') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='KODAK') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='MES') %>% 
+       rename(DATA=1)
 
 ## YTD
 
@@ -119,11 +122,12 @@ SHARE_LENTES_YTD <-
 SHARE_KODAK_YTD_2 <-
 rbind(SHARE_KODAK_YTD,SHARE_LENTES_YTD) %>% 
   group_by(ANO) %>% 
-  summarize(SHARE=sum(SHARE[PILAR=='KODAK'])/sum(SHARE[PILAR=='LENTES'])) %>% 
-  mutate(PILAR='KODAK') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='YTD') %>% 
-  rename(DATA=1)
+  summarize(SHARE=sum(SHARE[PILAR=='KODAK'])/sum(SHARE[PILAR=='LENTES'])) %>%
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='KODAK') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='YTD') %>% 
+       rename(DATA=1)
     
 
 ## SHARE TRANSITIONS  ==============================================================
@@ -145,10 +149,11 @@ SHARE_TRANSITIONS_MM_2 <-
 rbind(SHARE_TRANSITIONS_MM,SHARE_LENTES_QTD_MM) %>% 
   group_by(MES) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='TRANSITIONS'])/sum(SHARE[PILAR=='LENTES'])) %>% 
-  mutate(PILAR='KODAK') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='MES') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='TRANSITIONS') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='MES') %>% 
+       rename(DATA=1)
 
 ## YTD
 
@@ -167,10 +172,11 @@ SHARE_TRANSITIONS_YTD_2 <-
 rbind(SHARE_TRANSITIONS_YTD,SHARE_LENTES_QTD_YTD) %>% 
   group_by(ANO) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='TRANSITIONS'])/sum(SHARE[PILAR=='LENTES'])) %>% 
-  mutate(PILAR='TRANSITIONS') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='YTD') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='TRANSITIONS') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='YTD') %>% 
+       rename(DATA=1)
 
 
 ## SHARE CRIZAL  ==============================================================
@@ -192,10 +198,11 @@ SHARE_CRIZAL_MM_2 <-
 rbind(SHARE_CRIZAL_MM,SHARE_LA_QTD_MM) %>% 
   group_by(MES) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='CRIZAL'])/sum(SHARE[PILAR=='LA'])) %>% 
-  mutate(PILAR='CRIZAL') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='MES') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='CRIZAL') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='MES') %>% 
+       rename(DATA=1)
 
 ## YTD
 
@@ -214,10 +221,11 @@ SHARE_CRIZAL_YTD_2 <-
 rbind(SHARE_CRIZAL_YTD,SHARE_LA_QTD_YTD) %>% 
   group_by(ANO) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='CRIZAL'])/sum(SHARE[PILAR=='LA'])) %>% 
-  mutate(PILAR='CRIZAL') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='YTD') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='CRIZAL') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='YTD') %>% 
+       rename(DATA=1)
 
 
 ## SHARE MARCAS REPRO  ==============================================================
@@ -227,59 +235,134 @@ rbind(SHARE_CRIZAL_YTD,SHARE_LA_QTD_YTD) %>%
 SHARE_MREPRO_MM <-
   df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(SHARE = round(sum(VRVENDA),3)) %>% mutate(PILAR="M REPRO")
+  summarize(SHARE = sum(VRVENDA)) %>% mutate(PILAR="M REPRO")
 
 
 SHARE_VLENTES_MM <-
   df2   %>%  filter(LENTES=='LENTES') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(SHARE = round(sum(VRVENDA),3)) %>%  mutate(PILAR="V LENTES")
+  summarize(SHARE = sum(VRVENDA)) %>%  mutate(PILAR="V LENTES")
 
 SHARE_MREPRO_MM_2 <-
 rbind(SHARE_MREPRO_MM,SHARE_VLENTES_MM) %>% 
   group_by(MES) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='M REPRO'])/sum(SHARE[PILAR=='V LENTES'])) %>% 
-  mutate(PILAR='MARCAS REPRO') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='MES') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,4)) %>% 
+    mutate(PILAR='MARCAS REPRO') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='MES') %>% 
+       rename(DATA=1)
 
 ## YTD
 
 SHARE_MREPRO_YTD <-
   df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
   group_by(ANO=floor_date(PEDDTBAIXA,"year")) %>%  
-  summarize(SHARE = round(sum(VRVENDA),3)) %>% mutate(PILAR='M REPRO')
+  summarize(SHARE = VRVENDA) %>% mutate(PILAR='M REPRO')
 
 
 SHARE_VLENTES_YTD <-
   df2   %>%  filter(LENTES=='LENTES') %>% 
   group_by(ANO=floor_date(PEDDTBAIXA,"year")) %>%  
-  summarize(SHARE = round(sum(VRVENDA),3)) %>%  mutate(PILAR='V LENTES')
+  summarize(SHARE = sum(VRVENDA)) %>%  mutate(PILAR='V LENTES')
 
 SHARE_MREPRO_YTD_2 <- 
 rbind(SHARE_MREPRO_YTD,SHARE_VLENTES_YTD) %>% 
   group_by(ANO) %>% 
   summarize(SHARE=sum(SHARE[PILAR=='M REPRO'])/sum(SHARE[PILAR=='V LENTES'])) %>% 
-  mutate(PILAR='MARCAS REPRO') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='YTD') %>% 
-  rename(DATA=1)
+   mutate(SHARE=round(SHARE,3)) %>% 
+    mutate(PILAR='MARCAS REPRO') %>% 
+     mutate(METRICA='SHARE') %>% 
+      mutate(PERIODO='YTD') %>% 
+       rename(DATA=1)
 
 ## MERGE ALL  ==============================================================
 
 share_pilares <-
   rbind(SHARE_VARILUX_MM_2,
-           SHARE_KODAK_MM_2,
-            SHARE_TRANSITIONS_MM_2,
-               SHARE_CRIZAL_MM_2,
-                SHARE_MREPRO_MM_2,
-                 SHARE_VARILUX_YTD_2,
-                  SHARE_KODAK_YTD_2,
-                   SHARE_TRANSITIONS_YTD_2,
-                   SHARE_CRIZAL_YTD_2,
-                    SHARE_MREPRO_YTD_2)
+         SHARE_KODAK_MM_2,
+          SHARE_TRANSITIONS_MM_2,
+           SHARE_CRIZAL_MM_2,
+            SHARE_MREPRO_MM_2,
+             SHARE_VARILUX_YTD_2,
+              SHARE_KODAK_YTD_2,
+               SHARE_TRANSITIONS_YTD_2,
+                SHARE_CRIZAL_YTD_2,
+                 SHARE_MREPRO_YTD_2)
 
 
 range_write("1AaPXqa1zDw8rDY2o7uyniDIm5VpyJo4j7sZ2bHX8jE0", range = "A:I",data = share_pilares, sheet = "DADOS2",reformat = FALSE)
+
+
+## VAR SALES  ==============================================================
+
+VAR_VARILUX_MM <-
+  df2   %>%  filter(PILARES=='VARILUX') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
+  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+   mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1) %>% 
+  mutate(PILAR='VARILUX') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='MES') %>% 
+  rename(DATA=1)
+
+
+VAR_KODAK_MM <-
+  df2   %>%  filter(PILARES=='KODAK') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
+  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
+  mutate(PILAR='KODAK') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='MES') %>% 
+  rename(DATA=1)
+
+
+VAR_CRIZAL_MM <-
+  df2   %>%  filter(PILARES=='CRIZAL VS') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
+  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
+  mutate(PILAR='CRIZAL VS') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='MES') %>% 
+  rename(DATA=1)
+
+VAR_TRANSITIONS_MM <-
+  df2   %>%  filter(PILARES=='TRANSITIONS') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
+  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
+  mutate(PILAR='TRANSITIONS') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='MES') %>% 
+  rename(DATA=1)
+
+
+VAR_MREPRO_MM <-
+df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
+  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
+  mutate(PILAR='M REPRO') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='MES') %>% 
+  rename(DATA=1)
+
+
+
+var_pilares <-
+  rbind(VAR_VARILUX_MM,
+        VAR_KODAK_MM,
+        VAR_CRIZAL_MM,
+        VAR_TRANSITIONS_MM,
+        VAR_MREPRO_MM) %>% filter(!is.na(VAR))
+
+
+ggplot(var_pilares,aes(x=DATA,y=VAR,color=PILAR)) + geom_line()
+
+
+
+
+
 
