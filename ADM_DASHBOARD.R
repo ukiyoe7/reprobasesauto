@@ -355,6 +355,18 @@ VAR_VARILUX_MM <-
   mutate(PERIODO='MES') %>% 
   rename(DATA=1)
 
+VAR_VARILUX_YTD <-
+  df2   %>%  filter(PILARES=='VARILUX') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
+  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1) %>% 
+  mutate(PILAR='VARILUX') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='YTD') %>% 
+  rename(DATA=1)
+
+
+
 
 VAR_KODAK_MM <-
   df2   %>%  filter(PILARES=='KODAK') %>% 
