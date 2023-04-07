@@ -342,13 +342,15 @@ share_pilares <-
 
 range_write("1AaPXqa1zDw8rDY2o7uyniDIm5VpyJo4j7sZ2bHX8jE0", range = "A:I",data = share_pilares, sheet = "DADOS2",reformat = FALSE)
 
+## METRC VAR ==============================================================
 
-## VAR SALES  ==============================================================
+
+## VARILUX  ==============================================================
 
 VAR_VARILUX_MM <-
   df2   %>%  filter(PILARES=='VARILUX') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  summarize(VOL = round(sum(QTD),2)) %>% 
    mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1) %>% 
   mutate(PILAR='VARILUX') %>% 
   mutate(METRICA='VAR') %>% 
@@ -358,66 +360,118 @@ VAR_VARILUX_MM <-
 VAR_VARILUX_YTD <-
   df2   %>%  filter(PILARES=='VARILUX') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
-  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
-  mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1) %>% 
+  summarize(VOL = round(sum(QTD),2)) %>% 
+  mutate(VAR=(VOL/lag(VOL,1))-1) %>% 
   mutate(PILAR='VARILUX') %>% 
   mutate(METRICA='VAR') %>% 
   mutate(PERIODO='YTD') %>% 
   rename(DATA=1)
 
-
-
+## KODAK ========================================================
 
 VAR_KODAK_MM <-
   df2   %>%  filter(PILARES=='KODAK') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  summarize(VOL = round(sum(QTD),2)) %>% 
   mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
   mutate(PILAR='KODAK') %>% 
   mutate(METRICA='VAR') %>% 
   mutate(PERIODO='MES') %>% 
   rename(DATA=1)
 
+VAR_KODAK_YTD <-
+  df2   %>%  filter(PILARES=='KODAK') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
+  summarize(VOL = round(sum(QTD),2)) %>% 
+  mutate(VAR=(VOL/lag(VOL,1))-1) %>% 
+  mutate(PILAR='KODAK') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='YTD') %>% 
+  rename(DATA=1)
+
+
+## CRIZAL ========================================================
 
 VAR_CRIZAL_MM <-
   df2   %>%  filter(PILARES=='CRIZAL VS') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  summarize(VOL = round(sum(QTD),2)) %>% 
   mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
   mutate(PILAR='CRIZAL VS') %>% 
   mutate(METRICA='VAR') %>% 
   mutate(PERIODO='MES') %>% 
   rename(DATA=1)
 
+VAR_CRIZAL_YTD <-
+  df2   %>%  filter(PILARES=='CRIZAL VS') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
+  summarize(VOL = round(sum(QTD),2)) %>% 
+  mutate(VAR=(VOL/lag(VOL,1))-1) %>% 
+  mutate(PILAR='CRIZAL VS') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='YTD') %>% 
+  rename(DATA=1)
+
+
+## TRANSITIONS ========================================================
+
 VAR_TRANSITIONS_MM <-
   df2   %>%  filter(TRANSITIONS=='TRANSITIONS') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  summarize(VOL = round(sum(QTD),2)) %>% 
   mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
   mutate(PILAR='TRANSITIONS') %>% 
   mutate(METRICA='VAR') %>% 
   mutate(PERIODO='MES') %>% 
   rename(DATA=1)
 
+VAR_TRANSITIONS_YTD <-
+  df2   %>%  filter(TRANSITIONS=='TRANSITIONS') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
+  summarize(VOL = round(sum(QTD),2)) %>% 
+  mutate(VAR=(VOL/lag(VOL,1))-1) %>% 
+  mutate(PILAR='TRANSITIONS') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='YTD') %>% 
+  rename(DATA=1)
+
+## M REPRO ========================================================
+
 
 VAR_MREPRO_MM <-
 df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VOL = round(sum(QTD),as.numeric(format(Sys.Date(), "%m")))) %>% 
+  summarize(VOL = round(sum(QTD),2)) %>% 
   mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
   mutate(PILAR='M REPRO') %>% 
   mutate(METRICA='VAR') %>% 
   mutate(PERIODO='MES') %>% 
   rename(DATA=1)
 
+VAR_MREPRO_YTD <-
+  df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
+  group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
+  summarize(VOL = round(sum(QTD),2)-1) %>% 
+  mutate(VAR=(VOL/lag(VOL,1))-1) %>% 
+  mutate(PILAR='M REPRO') %>% 
+  mutate(METRICA='VAR') %>% 
+  mutate(PERIODO='YTD') %>% 
+  rename(DATA=1)
 
+## MERGE ALL
 
 var_pilares <-
   rbind(VAR_VARILUX_MM,
         VAR_KODAK_MM,
         VAR_CRIZAL_MM,
         VAR_TRANSITIONS_MM,
-        VAR_MREPRO_MM) %>% 
+        VAR_MREPRO_MM,
+        VAR_VARILUX_YTD,
+        VAR_KODAK_YTD,
+        VAR_CRIZAL_YTD,
+        VAR_TRANSITIONS_YTD,
+        VAR_MREPRO_YTD
+        ) %>% 
          filter(!is.na(VAR)) %>% 
           rename(VALOR=3) %>% .[,-2] %>% 
   mutate(VALOR=round(VALOR,4))
