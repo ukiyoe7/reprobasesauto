@@ -19,6 +19,15 @@ df <- dbGetQuery(con2, statement = read_file("C:\\Users\\Repro\\Documents\\R\\AD
 range_write("17W3qQfIhG6yBAZFCCxVeumscNjGl-aM3FVz2tAr36wo", range = "A:D",data = df, sheet = "DADOS1",reformat = FALSE)
 
 
+## ORIGN
+
+df <- dbGetQuery(con2, statement = read_file("C:\\Users\\Repro\\Documents\\R\\ADM\\BASES_AUTO\\SQL\\ORIGEM_PEDIDOS.sql"))
+
+
+range_write("17W3qQfIhG6yBAZFCCxVeumscNjGl-aM3FVz2tAr36wo", range = "A:D",data = df, sheet = "DADOS3",reformat = FALSE)
+
+
+
 ## PRODUCTS VIEW
 
 ## GET DATA
@@ -44,6 +53,7 @@ SHARE_MULTIFOCAIS_MM <-
   df2   %>%  filter(TIPO=='MULTIFOCAIS') %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
   summarize(VALOR = round(sum(VRVENDA),3)) %>%  mutate(PILAR="MULTIFOCAIS")
+
 
 SHARE_VARILUX_MM_2 <-
   rbind(SHARE_VARILUX_MM,SHARE_MULTIFOCAIS_MM) %>% 
@@ -218,14 +228,14 @@ SHARE_LA_QTD_YTD <-
   summarize(VALOR = round(sum(QTD),3)) %>%  mutate(PILAR="LA")
 
 SHARE_CRIZAL_YTD_2 <-
-rbind(SHARE_CRIZAL_YTD,SHARE_LA_QTD_YTD) %>% 
+ rbind(SHARE_CRIZAL_YTD,SHARE_LA_QTD_YTD) %>% 
   group_by(ANO) %>% 
-  summarize(VALOR=sum(VALOR[PILAR=='CRIZAL'])/sum(VALOR[PILAR=='LA'])) %>% 
-   mutate(VALOR=round(VALOR,3)) %>% 
-    mutate(PILAR='CRIZAL') %>% 
-     mutate(METRICA='SHARE') %>% 
-      mutate(PERIODO='YTD') %>% 
-       rename(DATA=1)
+   summarize(VALOR=sum(VALOR[PILAR=='CRIZAL'])/sum(VALOR[PILAR=='LA'])) %>% 
+    mutate(VALOR=round(VALOR,3)) %>% 
+     mutate(PILAR='CRIZAL') %>% 
+      mutate(METRICA='SHARE') %>% 
+       mutate(PERIODO='YTD') %>% 
+        rename(DATA=1)
 
 
 ## SHARE MARCAS REPRO  ==============================================================
@@ -233,7 +243,7 @@ rbind(SHARE_CRIZAL_YTD,SHARE_LA_QTD_YTD) %>%
 ## MM 
 
 SHARE_MREPRO_MM <-
-  df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
+  df2   %>%   filter(MPROPRIA %in% c('M CLIENTE','M REPRO'))  %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
   summarize(VALOR = sum(VRVENDA)) %>% mutate(PILAR="M REPRO")
 
@@ -256,7 +266,7 @@ rbind(SHARE_MREPRO_MM,SHARE_VLENTES_MM) %>%
 ## YTD
 
 SHARE_MREPRO_YTD <-
-  df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
+  df2   %>%  filter(MPROPRIA %in% c('M CLIENTE','M REPRO'))  %>% 
   group_by(ANO=floor_date(PEDDTBAIXA,"year")) %>%  
   summarize(VALOR = VRVENDA) %>% mutate(PILAR='M REPRO')
 
@@ -277,53 +287,7 @@ rbind(SHARE_MREPRO_YTD,SHARE_VLENTES_YTD) %>%
        rename(DATA=1)
 
 
-## SHARE MARCAS CLIENTES ==============================================================
 
-## MM 
-
-SHARE_MCLIENTES_MM <-
-  df2   %>%  filter(MPROPRIA=='M CLIENTE') %>% 
-  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VALOR = sum(VRVENDA)) %>% mutate(PILAR='M CLIENTE')
-
-
-SHARE_VMPROPRIA_MM <-
-  df2   %>%  filter(MPROPRIA %in% c('M CLIENTE','M REPRO')) %>% 
-  group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
-  summarize(VALOR = sum(VRVENDA)) %>%  mutate(PILAR="V MPROPRIA")
-
-SHARE_MCLIENTES_MM_2 <-
-  rbind(SHARE_MCLIENTES_MM,SHARE_VMPROPRIA_MM) %>% 
-  group_by(MES) %>% 
-  summarize(VALOR=sum(VALOR[PILAR=='M CLIENTE'])/sum(VALOR[PILAR=='V MPROPRIA'])) %>% 
-  mutate(VALOR=round(VALOR,4)) %>% 
-  mutate(PILAR='MARCAS CLIENTES') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='MES') %>% 
-  rename(DATA=1)
-
-## YTD
-
-SHARE_MCLIENTES_YTD <-
-  df2   %>%  filter(MPROPRIA=='M CLIENTE') %>% 
-  group_by(ANO=floor_date(PEDDTBAIXA,"year")) %>%  
-  summarize(VALOR = VRVENDA) %>% mutate(PILAR='M CLIENTE')
-
-
-SHARE_VMPROPRIA_YTD <-
-  df2   %>%  filter(MPROPRIA %in% c('M CLIENTE','M REPRO')) %>% 
-  group_by(ANO=floor_date(PEDDTBAIXA,"year")) %>%  
-  summarize(VALOR = sum(VRVENDA)) %>%  mutate(PILAR='V MPROPRIA')
-
-SHARE_MCLIENTES_YTD_2 <- 
-  rbind(SHARE_MCLIENTES_YTD,SHARE_VLENTES_YTD) %>% 
-  group_by(ANO) %>% 
-  summarize(VALOR=sum(VALOR[PILAR=='M CLIENTES'])/sum(VALOR[PILAR=='V MPROPRIA'])) %>% 
-  mutate(VALOR=round(VALOR,3)) %>% 
-  mutate(PILAR='MARCAS CLIENTES') %>% 
-  mutate(METRICA='SHARE') %>% 
-  mutate(PERIODO='YTD') %>% 
-  rename(DATA=1)
 
 ## MERGE ALL  ==============================================================
 
@@ -340,7 +304,7 @@ share_pilares <-
                  SHARE_MREPRO_YTD_2)
 
 
-range_write("1AaPXqa1zDw8rDY2o7uyniDIm5VpyJo4j7sZ2bHX8jE0", range = "A:I",data = share_pilares, sheet = "DADOS2",reformat = FALSE)
+
 
 ## METRC VAR ==============================================================
 
@@ -439,7 +403,7 @@ VAR_TRANSITIONS_YTD <-
 
 
 VAR_MREPRO_MM <-
-df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
+df2   %>%   filter(MPROPRIA %in% c('M CLIENTE','M REPRO'))  %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"month")) %>%  
   summarize(VOL = round(sum(QTD),2)) %>% 
   mutate(VAR=VOL/lag(VOL,as.numeric(format(Sys.Date(), "%m")))-1)  %>% 
@@ -449,7 +413,7 @@ df2   %>%  filter(MPROPRIA=='M REPRO') %>%
   rename(DATA=1)
 
 VAR_MREPRO_YTD <-
-  df2   %>%  filter(MPROPRIA=='M REPRO') %>% 
+  df2   %>%   filter(MPROPRIA %in% c('M CLIENTE','M REPRO'))  %>% 
   group_by(MES=floor_date(PEDDTBAIXA,"year")) %>%  
   summarize(VOL = round(sum(QTD),2)-1) %>% 
   mutate(VAR=(VOL/lag(VOL,1))-1) %>% 
@@ -477,10 +441,8 @@ var_pilares <-
   mutate(VALOR=round(VALOR,4))
 
 
-range_write("1AaPXqa1zDw8rDY2o7uyniDIm5VpyJo4j7sZ2bHX8jE0", range = "A52",
-            data = var_pilares, sheet = "DADOS2",reformat = FALSE,
-             col_names = FALSE)
-
+range_write("1AaPXqa1zDw8rDY2o7uyniDIm5VpyJo4j7sZ2bHX8jE0", range = "A:I",
+            data = rbind(share_pilares,var_pilares), sheet = "DADOS2",reformat = FALSE)
 
 
 
